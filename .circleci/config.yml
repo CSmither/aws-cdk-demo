@@ -1,0 +1,76 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    working_directory: ~/repo/client
+    docker:
+      - image: circleci/node:7.10
+    steps:
+      - checkout:
+          path: ~/repo
+
+      # Download and cache dependencies
+      - restore_cache:
+          key: node_modules-{{ checksum "~/repo/client/package-lock.json" }}
+
+      - run:
+          - working_directory: ~/repo/client
+          - command: npm ci
+
+      - save_cache:
+          key: node_modules-{{ checksum "~/repo/client/package-lock.json" }}
+          paths:
+            - ~/repo/client/node_modules
+
+      - run: npm build
+
+      - persist_to_workspace:
+          root: ~/repo/client
+          paths:
+            - ./.dockerignore
+            - ./Dockerfile
+            - ./build
+deploy_client_image:
+  working_directory: ~/client
+  docker:
+    - image: circleci/python:3.6.6-jessie-browsers
+  environment:
+    APPLICATION_NAME: cdk-demo-client
+  steps:
+    - attach_workspace:
+        at: ~/web-ui
+    - setup_remote_docker
+    - run:
+        name: "Docker build"
+        command: "docker build -t grad-bank-app-web-ui:latest ."
+        docker_layer_caching: true
+    - run:
+        name: Install the AWS CLI
+        command: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install awscli
+    - run:
+        name: Build Docker image
+        working_directory: ~/web-ui
+        command: docker build -t $APPLICATION_NAME:$CIRCLE_BUILD_NUM .
+    - run:
+        name: Push docker image to AWS
+        command: |
+          . venv/bin/activate
+          eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+          docker tag $APPLICATION_NAME:$CIRCLE_BUILD_NUM $REGISTRY:$CIRCLE_BUILD_NUM
+          docker tag $APPLICATION_NAME:$CIRCLE_BUILD_NUM $REGISTRY:$CIRCLE_SHA1
+          docker tag $APPLICATION_NAME:$CIRCLE_BUILD_NUM $REGISTRY:latest
+          docker push $REGISTRY:latest
+          docker push $REGISTRY:$CIRCLE_BUILD_NUM
+          docker push $REGISTRY:$CIRCLE_SHA1
+          aws ecs update-service --service GradBankApp-Client-Service-DEV --cluster GradBankApp-Cluster-DEV --force-new-deployment --region $AWS_DEFAULT_REGION
+        environment:
+          AWS_DEFAULT_REGION: eu-west-2
+          AWS_DEFAULT_OUTPUT: text
+          REGISTRY: 032044580362.dkr.ecr.eu-west-2.amazonaws.com/gradbankapp-client-repository
+          REGISTRY_ID: 032044580362
