@@ -4,7 +4,6 @@ import ec2 = require("@aws-cdk/aws-ec2");
 import ecr = require("@aws-cdk/aws-ecr");
 import docker = require("@aws-cdk/assets-docker");
 import { VpcNetwork } from "@aws-cdk/aws-ec2";
-import { ContainerImage } from "@aws-cdk/aws-ecs";
 
 export class cdkTest extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -37,7 +36,7 @@ export class cdkTest extends cdk.Stack {
 
     const repo: ecr.Repository = new ecr.Repository(this, "repo", {repositoryName:"client", retain: true})
 
-    const image: docker.DockerImageAsset = new docker.DockerImageAsset(this, "image", {repositoryName: repo.repositoryName, directory: clientRepo})
+    new docker.DockerImageAsset(this, "image", {repositoryName: repo.repositoryName, directory: clientRepo})
 
     const nameService = new ecs.LoadBalancedEc2Service (this, 'name-service', {
       cluster: cluster,
