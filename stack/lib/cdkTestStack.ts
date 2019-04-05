@@ -33,9 +33,6 @@ export class cdkTest extends cdk.Stack {
     } else {
       clientRepo = process.env.CLIENT_REPO;
     }
-    const asset = new DockerImageAsset(this, "MyBuildImage", {
-      directory: path.join(clientRepo, ".")
-    });
 
     const service: ecs.LoadBalancedEc2Service = new ecs.LoadBalancedEc2Service(
       this,
@@ -44,7 +41,9 @@ export class cdkTest extends cdk.Stack {
         cluster: cluster,
         desiredCount: (new Date().getMinutes() / 10) % 2 === 1 ? 1 : 0,
         memoryLimitMiB: 128,
-        image: ecs.ContainerImage.fromRegistry(asset.imageUri),
+        image: ecs.ContainerImage.fromAsset(this, "asset", {
+          directory: path.join(clientRepo, ".")
+        }),
         containerPort: 3000
       }
     );
