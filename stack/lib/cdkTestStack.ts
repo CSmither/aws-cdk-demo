@@ -2,7 +2,6 @@ import cdk = require("@aws-cdk/cdk");
 import ecs = require("@aws-cdk/aws-ecs");
 import ec2 = require("@aws-cdk/aws-ec2");
 import { VpcNetwork } from "@aws-cdk/aws-ec2";
-import path = require("path");
 
 export class cdkTest extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -40,7 +39,7 @@ export class cdkTest extends cdk.Stack {
       memoryLimitMiB: 128,
       containerPort: 3000
    });
-   
+
    new cdk.CfnOutput(this, "LoadBalancerDNS", {
      value: nameService.loadBalancer.dnsName
    });
