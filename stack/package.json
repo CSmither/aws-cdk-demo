@@ -15,9 +15,12 @@
     "aws-cdk": "^0.28.0"
   },
   "dependencies": {
+    "@aws-cdk/assets-docker": "^0.28.0",
     "@aws-cdk/aws-ecr": "^0.28.0",
     "@aws-cdk/aws-ecs": "^0.28.0",
     "@aws-cdk/cdk": "^0.28.0",
-    "source-map-support": "^0.5.9"
+    "prettier": "^1.16.4",
+    "source-map-support": "^0.5.9",
+    "tslint": "^5.15.0"
   }
 }
