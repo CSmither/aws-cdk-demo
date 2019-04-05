@@ -26,6 +26,7 @@ jobs:
       - run: npm run build
 
       - run:
+          working_directory: ~/repo/stack
           environment: 
-            CLIENT_REPO: ~/repo/client
+            CLIENT_REPO: ../client
           command: npm run cdk deploy
