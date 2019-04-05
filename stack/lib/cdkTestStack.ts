@@ -2,7 +2,6 @@ import cdk = require("@aws-cdk/cdk");
 import ecs = require("@aws-cdk/aws-ecs");
 import ec2 = require("@aws-cdk/aws-ec2");
 import { VpcNetwork } from "@aws-cdk/aws-ec2";
-import { DockerImageAsset } from "@aws-cdk/assets-docker";
 import path = require("path");
 
 export class cdkTest extends cdk.Stack {
