@@ -16,7 +16,7 @@ jobs:
       - restore_cache:
           key: node_modules-{{ checksum "~/repo/stack/package-lock.json" }}
 
-      - run: npm ci
+      - run: npm i
 
       - save_cache:
           key: node_modules-{{ checksum "~/repo/stack/package-lock.json" }}
