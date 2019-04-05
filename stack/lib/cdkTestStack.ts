@@ -34,14 +34,12 @@ export class cdkTest extends cdk.Stack {
       clientRepo = process.env.CLIENT_REPO;
     }
 
-    const repo: ecr.Repository = new ecr.Repository(this, "repo", {repositoryName:"client", retain: true})
-
-    new docker.DockerImageAsset(this, "image", {repositoryName: repo.repositoryName, directory: clientRepo})
+    const image = new docker.DockerImageAsset(this, "image", {repositoryName: "client", directory: clientRepo})
 
     const nameService = new ecs.LoadBalancedEc2Service (this, 'name-service', {
       cluster: cluster,
       desiredCount: (new Date().getMinutes() / 10) % 2 === 1 ? 1 : 0,
-      image: ecs.ContainerImage.fromEcrRepository(repo),
+      image: ecs.ContainerImage.fromEcrRepository(image.repository),
       memoryLimitMiB: 128,
       containerPort: 3000
    });
