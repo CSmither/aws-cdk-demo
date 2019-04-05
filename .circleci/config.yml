@@ -23,6 +23,6 @@ jobs:
           paths:
             - ~/repo/stack/node_modules
 
-      - run: npm build
+      - run: npm run build
 
-      - run: npx cdk deploy
+      - run: npm run cdk deploy

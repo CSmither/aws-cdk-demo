@@ -21,6 +21,7 @@ export class cdkTest extends cdk.Stack {
     cluster.addCapacity("MyEC2Capacity", {
       instanceType: new ec2.InstanceType("t2.micro"),
       desiredCapacity: (new Date().getMinutes() / 10) % 2 === 1 ? 1 : 0,
+      minCapacity: 0,
       replacingUpdateMinSuccessfulInstancesPercent: 0
     });
 
