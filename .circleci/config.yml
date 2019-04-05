@@ -7,7 +7,7 @@ jobs:
   build:
     working_directory: ~/repo/stack
     docker:
-      - image: circleci/node:7.10
+      - image: circleci/node:11.9.0-stretch
     steps:
       - checkout:
           path: ~/repo
