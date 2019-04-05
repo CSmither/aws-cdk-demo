@@ -25,6 +25,8 @@ jobs:
 
       - run: npm run build
 
+      - run: npm run cdk diff
+
       - run:
           working_directory: ~/repo/stack
           environment: 
