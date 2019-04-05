@@ -34,7 +34,7 @@ export class cdkTest extends cdk.Stack {
       clientRepo = process.env.CLIENT_REPO;
     }
     const asset = new DockerImageAsset(this, "MyBuildImage", {
-      directory: path.join(clientRepo, "client")
+      directory: path.join(clientRepo, ".")
     });
 
     const service: ecs.LoadBalancedEc2Service = new ecs.LoadBalancedEc2Service(
