@@ -33,22 +33,16 @@ export class cdkTest extends cdk.Stack {
       clientRepo = process.env.CLIENT_REPO;
     }
 
-    const service: ecs.LoadBalancedEc2Service = new ecs.LoadBalancedEc2Service(
-      this,
-      "ecs-demo-client-service-master",
-      {
-        cluster: cluster,
-        desiredCount: (new Date().getMinutes() / 10) % 2 === 1 ? 1 : 0,
-        memoryLimitMiB: 128,
-        image: ecs.ContainerImage.fromAsset(this, "asset", {
-          directory: path.join(clientRepo, ".")
-        }),
-        containerPort: 3000
-      }
-    );
-
-    new cdk.CfnOutput(this, "LoadBalancerDNS", {
-      value: service.loadBalancer.dnsName
-    });
+    const nameService = new ecs.LoadBalancedEc2Service (this, 'name-service', {
+      cluster: cluster,
+      desiredCount: (new Date().getMinutes() / 10) % 2 === 1 ? 1 : 0,
+      image: ecs.ContainerImage.fromAsset(this,"image",{directory: clientRepo}),
+      memoryLimitMiB: 128,
+      containerPort: 3000
+   });
+   
+   new cdk.CfnOutput(this, "LoadBalancerDNS", {
+     value: nameService.loadBalancer.dnsName
+   });
   }
 }
