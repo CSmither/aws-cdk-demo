@@ -29,10 +29,10 @@ jobs:
           working_directory: ~/repo/stack
           environment: 
             CLIENT_REPO: ../client
-          command: npm run cdk diff
+          command: npm run cdk diff --verbose
 
       - run:
           working_directory: ~/repo/stack
           environment: 
             CLIENT_REPO: ../client
-          command: npm run cdk deploy
+          command: npm run cdk deploy --verbose
