@@ -1,10 +1,8 @@
 import cdk = require("@aws-cdk/cdk");
 import ecs = require("@aws-cdk/aws-ecs");
 import ec2 = require("@aws-cdk/aws-ec2");
-import ecr = require("@aws-cdk/aws-ecr");
-import docker = require("@aws-cdk/assets-docker");
 import { VpcNetwork } from "@aws-cdk/aws-ec2";
-import { ContainerDefinition, Ec2TaskDefinition, ContainerImage, AssetImage } from "@aws-cdk/aws-ecs";
+import { AssetImage } from "@aws-cdk/aws-ecs";
 
 export class cdkTest extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
