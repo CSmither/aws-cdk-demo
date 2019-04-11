@@ -1,6 +1,9 @@
 import cdk = require("@aws-cdk/cdk");
 import ecs = require("@aws-cdk/aws-ecs");
 import ec2 = require("@aws-cdk/aws-ec2");
+import { Asset } from "@aws-cdk/assets";
+import { AssetImage, EcrImage } from "@aws-cdk/aws-ecs";
+import { Repository } from "@aws-cdk/aws-ecr";
 
 export class cdkTest extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -34,9 +37,7 @@ export class cdkTest extends cdk.Stack {
     const nameService = new ecs.LoadBalancedEc2Service(this, "name-service", {
       cluster: cluster,
       desiredCount: (new Date().getMinutes() / 10) % 2 === 1 ? 1 : 0,
-      image: ecs.ContainerImage.fromAsset(this, "Image", {
-        directory: clientRepo
-      }),
+      image: EcrImage.fromAsset(this, "image", { directory: clientRepo }),
       memoryLimitMiB: 128,
       containerPort: 3000
     });
