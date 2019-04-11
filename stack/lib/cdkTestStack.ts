@@ -1,8 +1,7 @@
 import cdk = require("@aws-cdk/cdk");
 import ecs = require("@aws-cdk/aws-ecs");
 import ec2 = require("@aws-cdk/aws-ec2");
-import { LoadBalancer } from "@aws-cdk/aws-elasticloadbalancing";
-import { ApplicationLoadBalancer, ApplicationTargetGroup, IpAddressType, ApplicationListener } from "@aws-cdk/aws-elasticloadbalancingv2";
+import { ApplicationLoadBalancer, ApplicationTargetGroup, IpAddressType } from "@aws-cdk/aws-elasticloadbalancingv2";
 
 export class cdkTest extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -60,7 +59,7 @@ export class cdkTest extends cdk.Stack {
 
     const targetGroup = new ApplicationTargetGroup(this,"targetGroup",{vpc:vpc, port:80})
 
-    const listener: ApplicationListener = lb.addListener("listener", {port: 80, open:true, defaultTargetGroups: [targetGroup]})
+    lb.addListener("listener", {port: 80, open:true, defaultTargetGroups: [targetGroup]})
 
     service.attachToApplicationTargetGroup(targetGroup)
 
