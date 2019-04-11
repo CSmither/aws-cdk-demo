@@ -1,7 +1,7 @@
 import cdk = require("@aws-cdk/cdk");
 import ecs = require("@aws-cdk/aws-ecs");
 import ec2 = require("@aws-cdk/aws-ec2");
-import { ApplicationLoadBalancer, ApplicationTargetGroup, IpAddressType } from "@aws-cdk/aws-elasticloadbalancingv2";
+import { LoadBalancerType } from "@aws-cdk/aws-ecs";
 
 export class cdkTest extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -9,7 +9,7 @@ export class cdkTest extends cdk.Stack {
 
     this.node.apply(new cdk.Tag("project", "aws-cdk-test"));
 
-    const vpc = new ec2.VpcNetwork(this, "MyVPC", { maxAZs: 2 });
+    const vpc = new ec2.VpcNetwork(this, "MyVPC", { maxAZs: 3 });
 
     const cluster: ecs.Cluster = new ecs.Cluster(this, "ecs-cluster", {
       clusterName: "demo",
@@ -32,39 +32,22 @@ export class cdkTest extends cdk.Stack {
       clientRepo = process.env.CLIENT_REPO;
     }
 
-    const taskDefinition = new ecs.Ec2TaskDefinition(this, "TaskDef");
-
-    const container = taskDefinition
-      .addContainer("TheContainer", {
-        image: ecs.ContainerImage.fromAsset(this, "EventImage", {
-          directory: clientRepo
-        }),
-        memoryLimitMiB: 256,
-        logging: new ecs.AwsLogDriver(this, "TaskLogging", {
-          streamPrefix: "EventDemo"
-        })
-      });
-    container.addPortMappings({ containerPort: 3000 });
-
-    const service = new ecs.Ec2Service(this, "Service", {
-      cluster: cluster,
-      taskDefinition: taskDefinition,
-      desiredCount: 1,
-      minimumHealthyPercent: 0,
-      maximumPercent: 100,
-      placeOnDistinctInstances: false
+    const image = ecs.ContainerImage.fromAsset(this, "Image", {
+      directory: clientRepo
     });
 
-    const lb : ApplicationLoadBalancer = new ApplicationLoadBalancer(this, "lb", {vpc: vpc, ipAddressType: IpAddressType.Ipv4, internetFacing: true})
-
-    const targetGroup = new ApplicationTargetGroup(this,"targetGroup",{vpc:vpc, port:80})
-
-    lb.addListener("listener", {port: 80, open:true, defaultTargetGroups: [targetGroup]})
-
-    service.attachToApplicationTargetGroup(targetGroup)
+    const service = new ecs.LoadBalancedEc2Service(this, "Service", {
+      cluster: cluster,
+      image: image,
+      loadBalancerType: LoadBalancerType.Application,
+      containerPort: 3000,
+      memoryLimitMiB: 256,
+      publicLoadBalancer: true,
+      desiredCount: 1
+    });
 
     new cdk.CfnOutput(this, "LoadBalancerDNS", {
-      value: lb.dnsName
+      value: service.loadBalancer.dnsName
     });
   }
 }
