@@ -2,6 +2,7 @@ import cdk = require("@aws-cdk/cdk");
 import ecs = require("@aws-cdk/aws-ecs");
 import ec2 = require("@aws-cdk/aws-ec2");
 import { LoadBalancerType } from "@aws-cdk/aws-ecs";
+import { LogGroup } from "@aws-cdk/aws-logs";
 
 export class cdkTest extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -49,7 +50,12 @@ export class cdkTest extends cdk.Stack {
       memoryLimitMiB: 256,
       publicLoadBalancer: true,
       desiredCount: 1
-    });   
+    });
+    const logGroup = new LogGroup(service, 'LogGroup', {
+      retentionDays: 7
+    });
+
+    logGroup.newStream(service, "stream", { logStreamName: "CDK-TEST" })
 
     new cdk.CfnOutput(this, "LoadBalancerDNS", {
       value: service.loadBalancer.dnsName
