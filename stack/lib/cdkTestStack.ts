@@ -1,8 +1,7 @@
 import cdk = require("@aws-cdk/cdk");
 import ecs = require("@aws-cdk/aws-ecs");
 import ec2 = require("@aws-cdk/aws-ec2");
-import { LoadBalancerType, AwsLogDriver } from "@aws-cdk/aws-ecs";
-import { LogStream, LogGroup } from "@aws-cdk/aws-logs";
+import { LoadBalancerType } from "@aws-cdk/aws-ecs";
 
 export class cdkTest extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
