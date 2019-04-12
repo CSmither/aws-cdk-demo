@@ -26,7 +26,7 @@ jobs:
       - run: npm run build
 
       # - run:
-      #     working_directory: ~/repo/stack
+      #     w orking_directory: ~/repo/stack
       #     environment: 
       #       CLIENT_REPO: ../client
       #     command: npm run cdk diff --verbose
@@ -35,4 +35,4 @@ jobs:
           working_directory: ~/repo/stack
           environment: 
             CLIENT_REPO: ../client
-          command: npm run cdk deploy --verbose
+          command: npm run cdk deploy --verbose | cat
