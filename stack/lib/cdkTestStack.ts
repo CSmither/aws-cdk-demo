@@ -7,6 +7,8 @@ export class cdkTest extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+    console.log("COLUMN WIDTH ===> "+process.stdout.columns);
+
     this.node.apply(new cdk.Tag("project", "aws-cdk-test"));
 
     const vpc = new ec2.VpcNetwork(this, "MyVPC", { maxAZs: 3 });
