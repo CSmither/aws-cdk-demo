@@ -1,7 +1,8 @@
 import cdk = require("@aws-cdk/cdk");
 import ecs = require("@aws-cdk/aws-ecs");
 import ec2 = require("@aws-cdk/aws-ec2");
-import { LoadBalancerType } from "@aws-cdk/aws-ecs";
+import { LoadBalancerType, AwsLogDriver } from "@aws-cdk/aws-ecs";
+import { LogStream, LogGroup } from "@aws-cdk/aws-logs";
 
 export class cdkTest extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -21,10 +22,11 @@ export class cdkTest extends cdk.Stack {
     });
 
     cluster.addCapacity("MyEC2Capacity", {
-      instanceType: new ec2.InstanceType("t2.micro"),
-      desiredCapacity: (new Date().getMinutes() / 10) % 2 === 1 ? 1 : 0,
+      instanceType: new ec2.InstanceType("t3.micro"),
+      desiredCapacity: 1, //(new Date().getMinutes() / 10) % 2 === 1 ? 1 : 0,
       minCapacity: 0,
-      replacingUpdateMinSuccessfulInstancesPercent: 0
+      replacingUpdateMinSuccessfulInstancesPercent: 0,
+      resourceSignalCount: 1
     });
 
     let clientRepo: string;
@@ -48,7 +50,7 @@ export class cdkTest extends cdk.Stack {
       memoryLimitMiB: 256,
       publicLoadBalancer: true,
       desiredCount: 1
-    });
+    });   
 
     new cdk.CfnOutput(this, "LoadBalancerDNS", {
       value: service.loadBalancer.dnsName
