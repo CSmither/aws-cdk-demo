@@ -24,9 +24,10 @@ jobs:
             - ~/repo/stack/node_modules
 
       - run: npm run build
+      - setup_remote_docker
 
       # - run:
-      #     w orking_directory: ~/repo/stack
+      #     working_directory: ~/repo/stack
       #     environment: 
       #       CLIENT_REPO: ../client
       #     command: npm run cdk diff --verbose
